@@ -1,1 +1,20 @@
+from sklearn.naive_bayes import GaussianNB
 
+X = [
+    [1, 1, 1],
+    [1, 1, 0],
+    [0, 1, 1],
+    [1, 0, 1],
+    [0, 0, 0]
+]
+
+y = ["Flu", "Flu", "Flu", "Flu", "No Flu"]
+
+model = GaussianNB()
+model.fit(X, y)
+
+patient = [[1, 1, 1]]
+
+prediction = model.predict(patient)
+
+print("Prediction:", prediction[0])
