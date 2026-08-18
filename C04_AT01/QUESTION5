@@ -1,1 +1,96 @@
+import pandas as pd
 
+from pgmpy.estimators import HillClimbSearch, BayesianEstimator
+from pgmpy.models import DiscreteBayesianNetwork
+from pgmpy.inference import VariableElimination
+
+
+data = pd.read_csv(
+    r"C:\Users\shaik\OneDrive\Desktop\machine learning2\insurance.csv"
+)
+
+print("Original Dataset:")
+print(data)
+
+
+
+data["Age"] = data["Age"].map({
+    "Young": 0,
+    "Middle": 1,
+    "Old": 2
+})
+
+data["Income"] = data["Income"].map({
+    "Low": 0,
+    "High": 1
+})
+
+data["VehicleType"] = data["VehicleType"].map({
+    "Bike": 0,
+    "Car": 1
+})
+
+data["Claim"] = data["Claim"].map({
+    "No": 0,
+    "Yes": 1
+})
+
+
+print("\nConverted Dataset:")
+print(data)
+
+
+hc = HillClimbSearch(data)
+
+best_model = hc.estimate()
+
+print("\nLearned Network Structure:")
+print(list(best_model.edges()))
+
+
+model = DiscreteBayesianNetwork(best_model.edges())
+
+
+model.add_nodes_from(data.columns)
+
+
+
+estimator = BayesianEstimator(model, data)
+
+cpds = estimator.get_parameters()
+
+model.add_cpds(*cpds)
+
+
+
+print("\nModel Valid:", model.check_model())
+
+
+print("\nConditional Probability Tables:")
+
+for cpd in model.get_cpds():
+    print(cpd)
+
+
+
+inference = VariableElimination(model)
+
+
+result = inference.query(
+    variables=["Claim"],
+    evidence={
+        "Age": 1,
+        "Income": 1,
+        "VehicleType": 1
+    }
+)
+
+
+print("\nPrediction Result:")
+print(result)
+
+
+print(
+    "\nProbability of Insurance Claim:",
+    result.values[1]
+)
