@@ -1,1 +1,37 @@
-
+import sklearn_crfsuite
+X = [
+    [
+        {"word": "John"},
+        {"word": "bought"},
+        {"word": "iPhone"},
+        {"word": "15"},
+        {"word": "ID123"}
+    ],
+    [
+        {"word": "Sarah"},
+        {"word": "ordered"},
+        {"word": "Samsung"},
+        {"word": "S24"},
+        {"word": "ID456"}
+    ]
+]
+y = [
+    ["B-CUSTOMER", "O", "B-PRODUCT", "I-PRODUCT", "B-ORDER"],
+    ["B-CUSTOMER", "O", "B-PRODUCT", "I-PRODUCT", "B-ORDER"]
+]
+crf = sklearn_crfsuite.CRF()
+crf.fit(X, y)
+test = [[
+    {"word": "David"},
+    {"word": "bought"},
+    {"word": "iPhone"},
+    {"word": "15"},
+    {"word": "ID999"}
+]]
+result = crf.predict(test)
+print("NER Result:")
+for word, label in zip(
+    ["David", "bought", "iPhone", "15", "ID999"],
+    result[0]
+):
+    print(word, "->", label)
