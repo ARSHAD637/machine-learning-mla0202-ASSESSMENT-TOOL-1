@@ -1,1 +1,20 @@
-
+import numpy as np
+from hmmlearn import hmm
+model = hmm.CategoricalHMM(n_components=3)
+model.startprob_ = [0.7, 0.2, 0.1]
+model.transmat_ = [
+    [0.8, 0.2, 0.0],
+    [0.1, 0.7, 0.2],
+    [0.0, 0.2, 0.8]
+]
+model.emissionprob_ = [
+    [0.8, 0.2, 0.0],
+    [0.2, 0.6, 0.2],
+    [0.0, 0.2, 0.8]
+]
+data = np.array([[0], [1], [2], [2]])
+log_prob, states = model.decode(data)
+names = ["Healthy", "Warning", "Failure"]
+print("Machine States:")
+for state in states:
+    print(names[state])
