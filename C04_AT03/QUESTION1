@@ -1,1 +1,40 @@
-
+from pgmpy.models import DiscreteBayesianNetwork
+from pgmpy.factors.discrete import TabularCPD
+import networkx as nx
+bn = DiscreteBayesianNetwork([
+    ("Disease", "Fever"),
+    ("Disease", "Cough")
+])
+disease = TabularCPD(
+    "Disease", 2,
+    [[0.7],
+     [0.3]]
+)
+fever = TabularCPD(
+    "Fever", 2,
+    [[0.9, 0.2],
+     [0.1, 0.8]],
+    evidence=["Disease"],
+    evidence_card=[2]
+)
+cough = TabularCPD(
+    "Cough", 2,
+    [[0.8, 0.3],
+     [0.2, 0.7]],
+    evidence=["Disease"],
+    evidence_card=[2]
+)
+bn.add_cpds(disease, fever, cough)
+print("BAYESIAN NETWORK")
+print("Connections:", list(bn.edges()))
+print("Valid:", bn.check_model())
+mrf = nx.Graph()
+mrf.add_edges_from([
+    ("Disease", "Fever"),
+    ("Disease", "Cough"),
+    ("Fever", "Cough")
+])
+print("\nMARKOV RANDOM FIELD")
+print("Connections:", list(mrf.edges()))
+print("\nConclusion:")
+print("Bayesian Network is more suitable for disease diagnosis.")
