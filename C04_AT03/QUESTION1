@@ -1,1 +1,36 @@
+from pgmpy.models import DiscreteBayesianNetwork
+from pgmpy.factors.discrete import TabularCPD
+model = DiscreteBayesianNetwork([
+    ("Disease", "Fever"),
+    ("Disease", "Cough")
+])
+cpd_disease = TabularCPD(
+    variable="Disease",
+    variable_card=2,
+    values=[[0.7], [0.3]]
+)
+cpd_fever = TabularCPD(
+    variable="Fever",
+    variable_card=2,
+    values=[
+        [0.9, 0.2],
+        [0.1, 0.8]
+    ],
+    evidence=["Disease"],
+    evidence_card=[2]
+)
 
+cpd_cough = TabularCPD(
+    variable="Cough",
+    variable_card=2,
+    values=[
+        [0.8, 0.3],
+        [0.2, 0.7]
+    ],
+    evidence=["Disease"],
+    evidence_card=[2]
+)
+model.add_cpds(cpd_disease, cpd_fever, cpd_cough)
+print("Bayesian Network:")
+print(model.edges())
+print("Model valid:", model.check_model())
