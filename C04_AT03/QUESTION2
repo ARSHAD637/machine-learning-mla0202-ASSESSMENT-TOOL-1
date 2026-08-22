@@ -1,1 +1,54 @@
+import numpy as np
+from hmmlearn import hmm
+from sklearn_crfsuite import CRF
+model = hmm.CategoricalHMM(
+    n_components=3,
+    random_state=42
+)
+model.startprob_ = np.array([
+    0.6, 0.2, 0.2
+])
 
+model.transmat_ = np.array([
+    [0.7, 0.2, 0.1],
+    [0.3, 0.6, 0.1],
+    [0.3, 0.1, 0.6]
+])
+model.emissionprob_ = np.array([
+    [0.8, 0.1, 0.1],
+    [0.1, 0.8, 0.1],
+    [0.1, 0.1, 0.8]
+])
+data = np.array([
+    [0],
+    [0],
+    [1],
+    [1],
+    [2]
+])
+prediction = model.predict(data)
+print("HMM Prediction:")
+print(prediction)
+X_train = [[
+    {"speed": "low", "steering": "straight"},
+    {"speed": "high", "steering": "left"},
+    {"speed": "low", "steering": "straight"}
+]]
+
+y_train = [[
+    "normal",
+    "turning",
+    "normal"
+]]
+crf = CRF()
+crf.fit(X_train, y_train)
+X_test = [[
+    {"speed": "low", "steering": "straight"},
+    {"speed": "high", "steering": "left"},
+    {"speed": "low", "steering": "straight"}
+]]
+prediction = crf.predict(X_test)
+print("\nCRF Prediction:")
+print(prediction)
+print("\nConclusion:")
+print("CRF is more suitable for complex autonomous vehicle sensor data.")
