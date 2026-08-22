@@ -1,1 +1,54 @@
-
+from pgmpy.models import DiscreteBayesianNetwork
+from pgmpy.factors.discrete import TabularCPD
+import networkx as nx
+bn = DiscreteBayesianNetwork([
+    ("Income", "CreditScore"),
+    ("CreditScore", "DefaultRisk"),
+    ("Debt", "DefaultRisk")
+])
+income = TabularCPD(
+    "Income", 2,
+    [[0.6],
+     [0.4]]
+)
+debt = TabularCPD(
+    "Debt", 2,
+    [[0.7],
+     [0.3]]
+)
+credit = TabularCPD(
+    "CreditScore", 2,
+    [[0.8, 0.3],
+     [0.2, 0.7]],
+    evidence=["Income"],
+    evidence_card=[2]
+)
+risk = TabularCPD(
+    "DefaultRisk", 2,
+    [
+        [0.9, 0.6, 0.7, 0.2],
+        [0.1, 0.4, 0.3, 0.8]
+    ],
+    evidence=["CreditScore", "Debt"],
+    evidence_card=[2, 2]
+)
+bn.add_cpds(
+    income,
+    debt,
+    credit,
+    risk
+)
+print("BAYESIAN NETWORK")
+print("Connections:", list(bn.edges()))
+print("Valid:", bn.check_model())
+mrf = nx.Graph()
+mrf.add_edges_from([
+    ("Income", "CreditScore"),
+    ("CreditScore", "Debt"),
+    ("Debt", "DefaultRisk"),
+    ("CreditScore", "DefaultRisk")
+])
+print("\nMARKOV RANDOM FIELD")
+print("Connections:", list(mrf.edges()))
+print("\nConclusion:")
+print("Bayesian Network is more suitable for financial risk prediction.")
