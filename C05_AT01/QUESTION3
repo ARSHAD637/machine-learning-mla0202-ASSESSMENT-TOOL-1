@@ -9,7 +9,7 @@ data = pd.DataFrame({
                 0, 1, 0, 1, 0, 1]
 })
 
-# Stratified Sampling
+
 sample = data.groupby(
     'Category',
     group_keys=False
