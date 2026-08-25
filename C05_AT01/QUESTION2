@@ -1,1 +1,30 @@
+import random
 
+ads = [0, 0, 0, 0, 0]
+clicks = [0, 0, 0, 0, 0]
+
+for user in range(1000):
+
+    ad = random.randint(0, 4)
+
+   
+    probabilities = [0.05, 0.10, 0.15, 0.08, 0.12]
+
+  
+    if random.random() < probabilities[ad]:
+        reward = 1
+    else:
+        reward = 0
+
+    ads[ad] += 1
+    clicks[ad] += reward
+
+print("Advertisement Results")
+
+for i in range(5):
+    ctr = clicks[i] / ads[i]
+    print("Ad", i + 1, "CTR:", round(ctr, 3))
+
+best = clicks.index(max(clicks))
+
+print("Best Advertisement:", best + 1)
