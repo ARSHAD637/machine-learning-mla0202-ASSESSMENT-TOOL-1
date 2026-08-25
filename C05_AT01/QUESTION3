@@ -1,1 +1,28 @@
+import pandas as pd
 
+data = pd.DataFrame({
+    'Category': ['A', 'A', 'A', 'B', 'B', 'B',
+                 'C', 'C', 'C', 'D', 'D', 'D'],
+    'Age': [20, 25, 30, 35, 40, 45,
+            50, 55, 60, 65, 70, 75],
+    'Disease': [0, 1, 0, 1, 0, 1,
+                0, 1, 0, 1, 0, 1]
+})
+
+# Stratified Sampling
+sample = data.groupby(
+    'Category',
+    group_keys=False
+).sample(
+    frac=0.5,
+    random_state=1
+)
+
+print("Original Data:")
+print(data)
+
+print("\nStratified Sample:")
+print(sample)
+
+print("\nCategory Count:")
+print(sample['Category'].value_counts())
