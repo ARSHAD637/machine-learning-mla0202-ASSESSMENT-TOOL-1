@@ -1,1 +1,46 @@
+import random
 
+grid = [
+    ['S', '.', '.'],
+    ['.', '#', '.'],
+    ['.', '.', 'G']
+]
+
+actions = ['Up', 'Down', 'Left', 'Right']
+
+position = [0, 0]
+
+for step in range(25):
+
+    if grid[position[0]][position[1]] == 'G':
+        print("Goal Reached!")
+        break
+
+    action = random.choice(actions)
+
+    r, c = position
+
+    if action == 'Up':
+        r -= 1
+    elif action == 'Down':
+        r += 1
+    elif action == 'Left':
+        c -= 1
+    elif action == 'Right':
+        c += 1
+
+    # Check valid movement
+    if (0 <= r < 3 and 0 <= c < 3
+            and grid[r][c] != '#'):
+
+        position = [r, c]
+        reward = 10
+
+    else:
+        reward = -10
+
+    print("Step:", step + 1,
+          "Action:", action,
+          "Reward:", reward)
+
+print("Final Position:", position)
