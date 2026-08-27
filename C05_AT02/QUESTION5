@@ -1,1 +1,95 @@
+states = ["A", "B", "C", "D"]
+actions = ["Left", "Right"]
+policy = {
+    "A": "Right",
+    "B": "Right",
+    "C": "Left",
+    "D": "Left"
+}
+rewards = {
+    ("A", "Left"): -1,
+    ("A", "Right"): 2,
 
+    ("B", "Left"): 1,
+    ("B", "Right"): 3,
+
+    ("C", "Left"): 4,
+    ("C", "Right"): 1,
+
+    ("D", "Left"): 5,
+    ("D", "Right"): 2
+}
+V = {
+    "A": 0,
+    "B": 0,
+    "C": 0,
+    "D": 0
+}
+
+gamma = 0.9
+
+while True:
+    for iteration in range(100):
+
+        new_V = V.copy()
+
+        for state in states:
+
+            action = policy[state]
+
+            reward = rewards[(state, action)]
+
+            if action == "Right":
+                next_state = state
+            else:
+                next_state = state
+
+            new_V[state] = (
+                reward
+                + gamma * V[next_state]
+            )
+
+        V = new_V
+
+    policy_stable = True
+
+    for state in states:
+
+        old_action = policy[state]
+
+        best_action = None
+        best_value = float("-inf")
+
+        for action in actions:
+
+            reward = rewards[(state, action)]
+
+            value = reward + gamma * V[state]
+
+            if value > best_value:
+                best_value = value
+                best_action = action
+
+        policy[state] = best_action
+
+        if old_action != best_action:
+            policy_stable = False
+    if policy_stable:
+        break
+
+print("Optimal Values:")
+
+for state in states:
+    print(
+        state,
+        "=", round(V[state], 3)
+    )
+
+print("\nOptimal Policy:")
+
+for state in states:
+    print(
+        state,
+        "->",
+        policy[state]
+    )
