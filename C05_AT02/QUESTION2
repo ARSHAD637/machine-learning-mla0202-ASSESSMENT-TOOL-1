@@ -1,1 +1,24 @@
+import random
+K = 5
+N = 1000
+epsilon = 0.1
+Q = [0] * K
+count = [0] * K
 
+for i in range(N):
+    if random.random() < epsilon:
+        action = random.randint(0, K - 1)
+
+    else:
+        action = Q.index(max(Q)) 
+    reward = random.choice([0, 1])
+    count[action] += 1
+    Q[action] = Q[action] + (
+        (reward - Q[action]) / count[action]
+    )
+best_movie = Q.index(max(Q))
+print("Reward Estimates:")
+print(Q)
+print("\nBest Movie:")
+print("Movie", best_movie + 1)
+print("Expected Reward:", Q[best_movie])
