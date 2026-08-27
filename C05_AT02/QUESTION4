@@ -1,1 +1,36 @@
+import random
 
+V = {}
+alpha = 0.1
+
+gamma = 0.9
+episodes = 100
+
+for episode in range(episodes):
+
+    state = random.randint(0, 4)
+
+    for step in range(10):
+
+        next_state = random.randint(0, 4)
+
+        reward = random.choice([0, 1, -1])
+        if state not in V:
+            V[state] = 0
+
+        if next_state not in V:
+            V[next_state] = 0
+        V[state] = V[state] + alpha * (
+            reward
+            + gamma * V[next_state]
+            - V[state]
+        )
+        state = next_state
+
+print("Learned State Values:")
+
+for state in sorted(V):
+    print(
+        "State", state,
+        "Value =", round(V[state], 3)
+    )
